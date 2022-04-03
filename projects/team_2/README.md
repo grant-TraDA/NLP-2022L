@@ -1,4 +1,4 @@
-# Text Summarization – PSO vs. BART
+# Text Summarization – Exploring Potential of PSO Usage in Hybrid Algorithms
 
 ## Data
 Data should be downloaded from Kaggle: [CNN-DailyMail News Text Summarization](https://www.kaggle.com/datasets/gowrishankarp/newspaper-text-summarization-cnn-dailymail).
