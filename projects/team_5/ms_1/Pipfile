@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+scipy = "*"
+matplotlib = "*"
+numpy = "*"
+torch = "*"
+torchtext = "*"
+torchdata = "*"
+flair = "*"
+spacy = "*"
+nltk = "*"
+seaborn = "*"
+wordcloud = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.8"
