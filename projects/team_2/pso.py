@@ -1,0 +1,49 @@
+import numpy as np
+
+
+class PSO:
+    def __init__(self, n_particles, n_dim) -> None:
+        self.n_particles = n_particles
+        self.n_dim = n_dim
+        self.position = np.round(np.random.uniform(0, 1, (n_particles, n_dim)))
+        self.velocity = np.random.uniform(0, 1, (n_particles, n_dim))
+        self.pbest = self.position.copy()
+        self.pbest_score = list(map(PSO.target_function, self.pbest))
+        tmp_best = np.argmin(self.pbest_score)
+        self.gbest = self.position[tmp_best,:].copy()
+        self.gbest_score = self.pbest_score[tmp_best]
+
+    @staticmethod
+    def target_function(x):
+        # TODO make a target function
+        pass
+
+    @staticmethod
+    def constriction(phi):
+        t1 = np.sqrt((phi ** 2) - (4 * phi))
+        return 2 / np.abs(2 - phi - t1)
+
+    def update_best(self, constriction_coef):
+        scores = list(map(PSO.target_function, self.position))
+        for i, score in enumerate(scores):
+            if score < self.pbest_score[i]:
+                self.pbest_score[i] = score
+                self.pbest[i] = self.position[i].copy()
+            if score < self.gbest_score:
+                self.gbest_score = score
+                self.gbest = self.position[i].copy()
+
+    def update_velocity(self, constriction_coef, nostalgia_coef, social_coef):
+        # TODO make a velocity update function
+        pass
+
+    def update_position(self):
+        sigmed = 1/(1 + np.exp(-self.velocity.copy()))
+        rng = np.tile(np.random.uniform(0, 1, self.n_dim), (self.n_particles, 1))
+        self.position = np.sign(sigmed-rng) / 2 + .5
+
+    def optimize(self, n_iter) -> list[int]:
+        for iter in range(n_iter):
+            self.update_best()
+
+        # TODO make iterative optimization process
