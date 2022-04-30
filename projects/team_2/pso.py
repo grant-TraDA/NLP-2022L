@@ -24,7 +24,7 @@ class PSO:
         t1 = np.sqrt((phi ** 2) - (4 * phi))
         return 2 / np.abs(2 - phi - t1)
 
-    def update_best(self, constriction_coef):
+    def update_best(self):
         scores = list(map(PSO.target_function, self.position))
         for i, score in enumerate(scores):
             if score < self.pbest_score[i]:
