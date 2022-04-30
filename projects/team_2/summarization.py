@@ -15,6 +15,7 @@ def summarize(sentences, capacity=.5, n_iter=5000):
             similarity = _cosine(sentence_embeddings[i], sentence_embeddings[j])
             similarity_matrix[i, j] = similarity
             similarity_matrix[j, i] = similarity
+    print(similarity_matrix)
     pso = PSO(n_particles=50, similarity_matrix=similarity_matrix, capacity=capacity)
     optimum = pso.optimize(n_iter)
     return '. '.join([sentences[i] for i in np.where(optimum==1)[0]])
