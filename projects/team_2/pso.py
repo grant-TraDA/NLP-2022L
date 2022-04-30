@@ -1,4 +1,3 @@
-from winreg import ConnectRegistry
 import numpy as np
 
 
