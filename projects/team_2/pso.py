@@ -1,3 +1,4 @@
+from winreg import ConnectRegistry
 import numpy as np
 
 
@@ -34,8 +35,15 @@ class PSO:
                 self.gbest = self.position[i].copy()
 
     def update_velocity(self, constriction_coef, nostalgia_coef, social_coef):
-        # TODO make a velocity update function
-        pass
+        c1 = np.random.uniform(0, nostalgia_coef, self.position.shape)
+        c2 = np.random.uniform(0, social_coef, self.position.shape)
+        cognitive = (
+            c1 * (self.pbest - self.position)
+        )
+        social = (
+            c2 * (np.tile(self.gbest, (self.n_particles, 1)) - self.position)
+        )
+        self.velocity = constriction_coef * (self.velocity + cognitive + social)
 
     def update_position(self):
         sigmed = 1/(1 + np.exp(-self.velocity.copy()))
@@ -45,5 +53,5 @@ class PSO:
     def optimize(self, n_iter) -> list[int]:
         for iter in range(n_iter):
             self.update_best()
-
-        # TODO make iterative optimization process
+            self.update_velocity(0.7298, 2.05, 2.05)
+            self.update_position()
