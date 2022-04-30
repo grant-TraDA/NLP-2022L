@@ -1,1 +1,4 @@
-projects/team_2/__pycache__/pso.cpython-310.pyc
+projects/team_2/__pycache__/
+projects/team_2/data/test.csv
+projects/team_2/data/train.csv
+projects/team_2/data/validation.csv
