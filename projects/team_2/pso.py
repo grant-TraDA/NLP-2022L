@@ -6,11 +6,11 @@ class PSO:
         self.n_particles = n_particles
         self.similarities = similarities
         self.capacity = capacity
-        self.n_dim = self.similarity_matrix.shape[0]
+        self.n_dim = self.similarities[0].shape[0]
         self.position = np.round(np.random.uniform(0, 1, (self.n_particles, self.n_dim)))
         self.velocity = np.random.uniform(0, 1, (self.n_particles, self.n_dim))
         self.pbest = self.position.copy()
-        self.pbest_score = [PSO._target_function(x, self.similarity_matrix, self.capacity) for x in self.pbest]
+        self.pbest_score = [PSO._target_function(x, self.similarities, self.capacity) for x in self.pbest]
         tmp_best = np.argmin(self.pbest_score)
         self.gbest = self.position[tmp_best,:].copy()
         self.gbest_score = self.pbest_score[tmp_best]
@@ -30,7 +30,7 @@ class PSO:
         return 2 / np.abs(2 - phi - t1)
 
     def _update_best(self):
-        scores = [PSO._target_function(x, self.similarity_matrix, self.capacity) for x in self.position]
+        scores = [PSO._target_function(x, self.similarities, self.capacity) for x in self.position]
         for i, score in enumerate(scores):
             if score < self.pbest_score[i]:
                 self.pbest_score[i] = score
