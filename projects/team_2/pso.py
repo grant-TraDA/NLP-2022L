@@ -2,9 +2,9 @@ import numpy as np
 
 
 class PSO:
-    def __init__(self, n_particles, similarity_matrix, capacity) -> None:
+    def __init__(self, n_particles, similarities, capacity) -> None:
         self.n_particles = n_particles
-        self.similarity_matrix = similarity_matrix
+        self.similarities = similarities
         self.capacity = capacity
         self.n_dim = self.similarity_matrix.shape[0]
         self.position = np.round(np.random.uniform(0, 1, (self.n_particles, self.n_dim)))
@@ -16,11 +16,13 @@ class PSO:
         self.gbest_score = self.pbest_score[tmp_best]
 
     @staticmethod
-    def _target_function(x, similarity_matrix, capacity):
-        x = np.array(x).astype(bool)
-        in_var = np.mean(similarity_matrix[x] ** 2)
-        out_var = np.mean(similarity_matrix[x, x] ** 2)
-        return ((1 - capacity) * out_var) - (capacity * in_var)
+    def _target_function(x, similarities, capacity):
+        similarity_matrix = similarities[0]
+        similarity_to_all = np.tile(similarities[1], (len(similarity_matrix), 1))
+        sim_all = similarity_to_all + similarity_to_all.T - similarity_matrix
+        x = (np.array(x).reshape(-1, 1) @ np.array(x).reshape(1, -1))
+        x[np.tril_indices(len(x))] = 0
+        return np.sum(sim_all * x)
 
     @staticmethod
     def _constriction(phi):
