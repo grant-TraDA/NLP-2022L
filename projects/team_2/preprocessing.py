@@ -1,8 +1,13 @@
 import pandas as pd
 import unicodedata
 import re
+import string
 from pathlib import Path
 from typing import Union
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
+from nltk.stem.porter import *
 
 
 def normalize_unicode(data: pd.DataFrame) -> pd.DataFrame:
@@ -27,6 +32,14 @@ def drop_long_highlights(data: pd.DataFrame) -> pd.DataFrame:
     return data.drop(rows_to_drop, axis=0).reset_index(drop=True)
 
 
+def remove_stopwords_and_stem(sentence: str, stemmer, stop_words, punctuation):
+    sentence = sentence.translate(str.maketrans('', '', punctuation))
+    sentence = sentence.lower()
+    words = set(re.split(r"[ ']", sentence))
+    new_words = [stemmer.stem(word) for word in words if word and word not in stop_words]
+    return " ".join(new_words)
+
+
 def preprocess(path: Union[str, Path]) -> pd.DataFrame:
     data = pd.read_csv(path, usecols=[1, 2])
     data = data.drop_duplicates("highlights").reset_index(drop=True)
@@ -34,12 +47,18 @@ def preprocess(path: Union[str, Path]) -> pd.DataFrame:
                .pipe(remove_noise)\
                .pipe(drop_long_highlights)
     data["article"] = data["article"].apply(lambda x: re.split(r"[.?!;][ ']", x))
+    stopwords_english = set(stopwords.words('english'))
+    punctuation = string.punctuation
+    stemmer = PorterStemmer()
+    data["article"] = data["article"].apply(lambda sentences: [remove_stopwords_and_stem(sentence, stemmer, stopwords_english, punctuation) for sentence in sentences])
     return data
 
 
-def save_data(data_dir: str) -> None:
+def save_data(data_dir: str, subsets: list[str] = None) -> None:
+    if subsets is None:
+        subsets = ["train", "validation", "test"]
     data_dir = Path(data_dir)
-    for subset in ["train", "validation", "test"]:
+    for subset in subsets:
         data = preprocess(data_dir / f"{subset}.csv")
         pkl_path = data_dir / f"{subset}.pkl.zip"
         data.to_pickle(pkl_path.as_posix())
@@ -48,8 +67,15 @@ def save_data(data_dir: str) -> None:
 
 def load_data(data_dir: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     data_dir = Path(data_dir)
-    train = pd.read_pickle(data_dir / "train.pkl.zip")
-    valid = pd.read_pickle(data_dir / "validation.pkl.zip")
-    test = pd.read_pickle(data_dir / "test.pkl.zip")
+    train, valid, test = None, None, None
+    train_path = data_dir / "train.pkl.zip"
+    valid_path = data_dir / "validation.pkl.zip"
+    test_path = data_dir / "test.pkl.zip"
+    if train_path.exists():
+        train = pd.read_pickle(train_path)
+    if valid_path.exists():
+        valid = pd.read_pickle(valid_path)
+    if test_path.exists():
+        test = pd.read_pickle(test_path)
     return train, valid, test
 
