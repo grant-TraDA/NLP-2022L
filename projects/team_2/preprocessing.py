@@ -40,26 +40,28 @@ def remove_stopwords_and_stem(sentence: str, stemmer, stop_words, punctuation):
     return " ".join(new_words)
 
 
-def preprocess(path: Union[str, Path]) -> pd.DataFrame:
+def preprocess(path: Union[str, Path], intense: bool = True) -> pd.DataFrame:
     data = pd.read_csv(path, usecols=[1, 2])
     data = data.drop_duplicates("highlights").reset_index(drop=True)
     data = data.pipe(normalize_unicode)\
                .pipe(remove_noise)\
                .pipe(drop_long_highlights)
     data["article"] = data["article"].apply(lambda x: re.split(r"[.?!;][ ']", x))
-    stopwords_english = set(stopwords.words('english'))
-    punctuation = string.punctuation
-    stemmer = PorterStemmer()
-    data["article"] = data["article"].apply(lambda sentences: [remove_stopwords_and_stem(sentence, stemmer, stopwords_english, punctuation) for sentence in sentences])
+    if intense:
+        stopwords_english = set(stopwords.words('english'))
+        punctuation = string.punctuation
+        stemmer = PorterStemmer()
+        data["article"] = data["article"].apply(
+            lambda sentences: [remove_stopwords_and_stem(sentence, stemmer, stopwords_english, punctuation) for sentence in sentences])
     return data
 
 
-def save_data(data_dir: str, subsets: list[str] = None) -> None:
+def save_data(data_dir: str, subsets: list[str] = None, intense: bool = True) -> None:
     if subsets is None:
         subsets = ["train", "validation", "test"]
     data_dir = Path(data_dir)
     for subset in subsets:
-        data = preprocess(data_dir / f"{subset}.csv")
+        data = preprocess(data_dir / f"{subset}.csv", intense=intense)
         pkl_path = data_dir / f"{subset}.pkl.zip"
         data.to_pickle(pkl_path.as_posix())
         print(f"Saved file {pkl_path}")
