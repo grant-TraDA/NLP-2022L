@@ -3,11 +3,25 @@ import numpy as np
 from pso import PSO
 from scipy.spatial.distance import pdist, squareform
 from tqdm import tqdm
+import multiprocessing
+
+
+class Summarizer(object):
+    def __init__(self, model, n_iter=5000, length=4, capacity=.1):
+        self.model = model
+        self.n_iter = n_iter
+        self.length = length
+        self.capacity = capacity
+
+    def __call__(self, article):
+        return summarize(article, self.model, n_iter=self.n_iter, length=self.length, capacity=self.capacity)
 
 
 def summarize_multiple(articles, n_iter=5000, length=4, capacity=.1):
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    return [summarize(article, model, n_iter=n_iter, length=length, capacity=capacity) for article in tqdm(articles)]
+    with multiprocessing.Pool() as pool:
+        ret = pool.map(Summarizer(model, n_iter=n_iter, length=length, capacity=capacity), tqdm(articles))
+    return ret
 
 
 def summarize(sentences, model, n_iter=5000, length=4, capacity=.1):
