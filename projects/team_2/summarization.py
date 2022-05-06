@@ -13,8 +13,10 @@ def summarize_multiple(articles, n_iter=5000, length=4, capacity=.1):
 def summarize(sentences, model, n_iter=5000, length=4, capacity=.1):
     sentence_embeddings = model.encode(sentences)
     article_embedding = model.encode('. '.join(sentences))
-    similarity_matrix = 1 - squareform(pdist(sentence_embeddings, "cosine"))
-    similarity__to_all = 1 - np.array([pdist([article_embedding, x], 'cosine')[0] for x in sentence_embeddings])
+    sm = 1 - squareform(
+        pdist(np.concatenate((sentence_embeddings, article_embedding.reshape(1, -1)), axis=0), "cosine"))
+    similarity_matrix = sm[:-1, :-1]
+    similarity__to_all = sm[-1, :-1]
     pso = PSO(n_particles=50, similarities=(similarity_matrix, similarity__to_all), length=length, capacity=capacity)
     # print(pso.gbest_score)
     optimum = pso.optimize(n_iter)
