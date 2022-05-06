@@ -23,7 +23,7 @@ class PSO:
         sim_all = similarity_to_all + similarity_to_all.T - similarity_matrix
         x_triangle = (np.array(x).reshape(-1, 1) @ np.array(x).reshape(1, -1))
         x_triangle[np.tril_indices(len(x))] = 0
-        return ((1 - capacity) * np.max([0, np.sum(x) - length])) - (capacity * np.sum(sim_all * x))
+        return ((1 - capacity) * np.max([0, np.sum(x_triangle) - length])) - (capacity * np.sum(sim_all * x_triangle))
 
     @staticmethod
     def _constriction(phi):
