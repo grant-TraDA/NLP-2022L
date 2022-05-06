@@ -2,10 +2,15 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 from pso import PSO
 from scipy.spatial.distance import pdist, squareform
+from tqdm import tqdm
 
 
-def summarize(sentences, n_iter=5000, length=4, capacity=.1):
+def summarize_multiple(articles, n_iter=5000, length=4, capacity=.1):
     model = SentenceTransformer('all-MiniLM-L6-v2')
+    return [summarize(article, model, n_iter=n_iter, length=length, capacity=capacity) for article in tqdm(articles)]
+
+
+def summarize(sentences, model, n_iter=5000, length=4, capacity=.1):
     sentence_embeddings = model.encode(sentences)
     article_embedding = model.encode('. '.join(sentences))
     similarity_matrix = 1 - squareform(pdist(sentence_embeddings, "cosine"))
