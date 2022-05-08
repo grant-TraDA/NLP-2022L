@@ -1,13 +1,17 @@
+import os
+from pathlib import Path
+
+from sentence_transformers import SentenceTransformer
+
 from preprocessing import load_data
 from summarization import summarize_multiple
-from pathlib import Path
-import os
 
 
-def run_and_save(n_iter=250, length=4, capacity=.1, summary_path="summary", targets_path="targets"):
+def run_and_save(n_iter=250, length=4, capacity=.1, model=SentenceTransformer('all-MiniLM-L6-v2'),
+                 summary_path="summary", targets_path="targets"):
     train, valid, test = load_data("data")
 
-    summaries = summarize_multiple(test.article, n_iter=n_iter, length=length, capacity=capacity)
+    summaries = summarize_multiple(test.article, model=model, n_iter=n_iter, length=length, capacity=capacity)
     target_summaries = test.highlights
 
     for i, s in enumerate(summaries):

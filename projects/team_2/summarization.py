@@ -1,8 +1,8 @@
-from sentence_transformers import SentenceTransformer
 import numpy as np
-from pso import PSO
-from scipy.spatial.distance import pdist, squareform
 from p_tqdm import p_map
+from scipy.spatial.distance import pdist, squareform
+
+from pso import PSO
 
 
 class Summarizer(object):
@@ -16,8 +16,7 @@ class Summarizer(object):
         return summarize(article, self.model, n_iter=self.n_iter, length=self.length, capacity=self.capacity)
 
 
-def summarize_multiple(articles, n_iter=5000, length=4, capacity=.1):
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+def summarize_multiple(articles, model, n_iter=5000, length=4, capacity=.1):
     return p_map(Summarizer(model, n_iter=n_iter, length=length, capacity=capacity), articles)
 
 
