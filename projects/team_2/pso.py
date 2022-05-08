@@ -12,7 +12,7 @@ class PSO:
             similarities (Tuple[np.ndarray, np.ndarray]): matrix of similarities between sentences and matrix of similarities of sentences to the whole article
             length (int): user defined length of summary in number of sentences
             capacity (float): parameter defining how much pso will use exceeding size penality, bigger capacity allows more exceeding summary length (0 - only penality, 1 - only similarity) 
-        """        
+            """        
         self.n_particles: int = n_particles
         self.similarities: Tuple[np.ndarray, np.ndarray] = similarities
         self.length: int = length
@@ -112,19 +112,27 @@ class PSO:
         # actual position update
         self.position = np.sign(sigmed-rng) / 2 + .5
 
-    def optimize(self, n_iter: int) -> np.ndarray:
+    def optimize(self, n_iter: int, early_stopping: int = 20) -> np.ndarray:
         """Runs iterative PSO optimization algorithm.
 
         Args:
             n_iter (int): maximum number of iterations
-
+            early_stopping (int): after how many iteration without improvement algorithm should stop. Use 0 to turn off early stopping.
+        
         Returns:
             np.ndarray: optimal point represented as 0 and 1 array
         """
         # whole process is iterative
+        previous_best: List[float] = []
         for _ in range(n_iter):
+            # early stopping if PSO converged
+            if early_stopping > 0 and len(previous_best) >= early_stopping and previous_best[-early_stopping] == previous_best[-1]:
+                break
+
             self._update_best()
             # parameters below are chosen from broad literature and are commonly used in industry 
             self._update_velocity(2.05, 2.05)
             self._update_position()
+
+            previous_best.append(self.gbest_score)
         return self.gbest
