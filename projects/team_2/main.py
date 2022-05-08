@@ -20,13 +20,13 @@ def run_and_save(n_iter=250, length=4, capacity=.1, model=SentenceTransformer('a
     summaries = summarize_multiple(test.article[subset], model=model, n_iter=n_iter, length=length, capacity=capacity)
     target_summaries = test.highlights[subset]
 
-    for i, s in enumerate(summaries):
+    for i, s in zip(subset, summaries):
         path = Path(summary_path)
         os.makedirs(path, exist_ok=True)
         with open(path / (str(i).rjust(5, "0") + ".txt"), "w", encoding="utf-8") as f:
             f.write(s)
 
-    for i, s in enumerate(target_summaries):
+    for i, s in zip(subset, target_summaries):
         path = Path(targets_path)
         os.makedirs(path, exist_ok=True)
         with open(path / (str(i).rjust(5, "0") + ".txt"), "w", encoding="utf-8") as f:
