@@ -331,7 +331,6 @@ class KLEJTask(BaseTask):
         has_target = True
         if split == "test" and not os.path.exists(input_path):
             input_path = os.path.join(data_path, self.spec().task_path(), split + "_features.tsv")
-            has_target = False
         normalizer = self.normalizer()
         with open(input_path, "r", encoding="utf-8") as input_file:
             header = input_file.readline().strip().split("\t")
