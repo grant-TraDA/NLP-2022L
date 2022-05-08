@@ -52,7 +52,7 @@ class PSO:
         self.velocity = constriction_coef * (self.velocity + cognitive + social)
 
     def _update_position(self):
-        sigmed = 1/(1 + np.exp(-self.velocity.copy()))
+        sigmed = 1/(1 + np.exp(-self.velocity))
         rng = np.tile(np.random.uniform(0, 1, self.n_dim), (self.n_particles, 1))
         self.position = np.sign(sigmed-rng) / 2 + .5
 
