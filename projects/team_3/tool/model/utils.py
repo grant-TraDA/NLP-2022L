@@ -3,7 +3,7 @@ def load_model(library, ner_model, save_personal_titles,
     if library == 'spacy':
         from tool.model.spacy_model import SpacyModel
         if ner_model is None:
-            ner_model = 'en_core_web_sm'
+            ner_model = 'pl_core_news_lg'
         model = SpacyModel(
             ner_model,
             save_personal_titles,
@@ -34,8 +34,17 @@ def load_model(library, ner_model, save_personal_titles,
     elif library == 'transformers':
         from tool.model.transformers_model import TransformerModel
         if ner_model is None:
-            ner_model = "xlm-roberta-large-finetuned-conll03-english"
+            ner_model = "Davlan/bert-base-multilingual-cased-ner-hrl"
         model = TransformerModel(
+            ner_model,
+            save_personal_titles,
+            fix_personal_titles)
+
+    elif library == 'poldeepner':
+        from tool.model.poldeepner_model import PolDeepNerModel
+        if ner_model is None:
+            ner_model = "kpwr-n82-base"
+        model = PolDeepNerModel(
             ner_model,
             save_personal_titles,
             fix_personal_titles)
