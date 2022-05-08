@@ -56,9 +56,10 @@ def run_and_save(n_iter: int=250, length: int=4, capacity: float=.1, model: Sent
 if __name__ == '__main__':
     capacities = np.arange(0.1, 1, 0.2)
     models = ['all-MiniLM-L6-v2', 'all-MiniLM-L12-v2', 'all-distilroberta-v1', 'all-mpnet-base-v2']
-    for capacity in capacities:
-        for model in models:
+    for model_name in models:
+        model = SentenceTransformer(model_name)
+        for capacity in capacities:
             run_and_save(capacity=capacity,
-                         model=SentenceTransformer(model),
-                         summary_path=f"summaries/summary_{int(capacity*100)}_{model}",
+                         model=model,
+                         summary_path=f"summaries/summary_{int(capacity*100)}_{model_name}",
                          targets_path="targets")
