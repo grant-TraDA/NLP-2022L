@@ -20,8 +20,10 @@ class PSO:
         self.n_dim: int = self.similarities[0].shape[0]
         self.position: np.ndarray = np.round(np.random.uniform(0, 1, (self.n_particles, self.n_dim)))
         self.velocity: np.ndarray = np.random.uniform(0, 1, (self.n_particles, self.n_dim))
+        # as we start we can assign particles current position as their historically best
         self.pbest: np.ndarray = self.position.copy()
         self.pbest_score: np.ndarray = [PSO._target_function(x, self.similarities, self.length, self.capacity) for x in self.pbest]
+        # at this time we already seek globally best score among randomly chosen postions
         tmp_best: np.ndarray = np.argmin(self.pbest_score)
         self.gbest: np.ndarray = self.position[tmp_best,:].copy()
         self.gbest_score: np.ndarray = self.pbest_score[tmp_best]
