@@ -30,20 +30,28 @@ def run_and_save(n_iter: int=250, length: int=4, capacity: float=.1, model: Sent
     """
     _, _, test = load_data("data")
 
+    # choosing a subset from training data (not necessarily)
     if subset_size is None:
         subset = range(len(test))
     else:
         subset = random.sample(range(len(test)), subset_size)
 
+    # calculacting summaries for all articles
     summaries: List[str] = summarize_multiple(test.article[subset], model=model, n_iter=n_iter, length=length, capacity=capacity)
+    
+    # below process is needed for the purpose of calculating rouge metrics with which we compare our model to SOA examples
+
+    # getting target summaries from the dataset
     target_summaries: pd.Series = test.highlights[subset]
 
+    # saving our summaries
     for i, s in zip(subset, summaries):
         path = Path(summary_path)
         os.makedirs(path, exist_ok=True)
         with open(path / (str(i).rjust(5, "0") + ".txt"), "w", encoding="utf-8") as f:
             f.write(s)
 
+    # saving target summaries
     for i, s in zip(subset, target_summaries):
         path = Path(targets_path)
         os.makedirs(path, exist_ok=True)
@@ -54,6 +62,7 @@ def run_and_save(n_iter: int=250, length: int=4, capacity: float=.1, model: Sent
 
 
 if __name__ == '__main__':
+    # grid search along parameters
     capacities = np.arange(0.1, 1, 0.2)
     models = ['all-MiniLM-L6-v2', 'all-MiniLM-L12-v2', 'all-distilroberta-v1', 'all-mpnet-base-v2']
     for capacity in capacities:
