@@ -170,7 +170,7 @@ The computations will be done with google cloud graphics cards, on the google co
 
 To solve the task, we used RoBERTa deep machine learning models along with scripts prepared to train them for the KLEJ benchmark prepared by Allegro. The available scripts are \href{https://github.com/sdadas/polish-roberta}{here}. 
 
-During the development of the solution, we used the Collab Pro environment (Google's computing cloud) and the Tesla T4 graphics card that was assigned to us there.
+During the development of the solution, we used the Collab Pro environment (Google's computing cloud) and the Tesla graphics card that was assigned to us there.
 
 Solution preparation consisted of:
 \begin{enumerate}
@@ -185,10 +185,12 @@ Solution preparation consisted of:
 We tested two models while conducting the experiments. The first one is RoBERTa-large-v2, a model trained on a corpus of about 200GB of data. When training this model, we used the following python script call:
 
 python run\_tasks.py --arch roberta\_large --model\_dir roberta\_large --train-epochs 2 --tasks KLEJ-CBD --fp16 True --max-sentences 8 --update-freq 4 --resample 0:1,1:1,2:1
- 
-The parameters mean that we used the robert\_large architecture, the model is in the robert\_large folder, we want to train the model for 2 epochs, the task we are doing is TASK-CBD, we want to do the calculations with less precision (meaning they will be done faster), the maximum number of sentences in the GPU at one time is 8, the update rate is 4, the input resampling is 1 for class 0 (neutral), 1 for class 1 (cyber-bullying), 1 for class 2 (hate).
 
-Next, we tested the samplings as 1:15:10 and 0.75:5:3. In addition, we tested the performance of the RoBERT-base model trained on a 20GB body, which is 10x smaller than the RoBERT-large-v2.
+The training process took approximately 320 seconds (2 epochs) on a Tesla P4 16GB.
+ 
+The parameters mean that we used the roberta\_large architecture, the model is in the roberta\_large folder, we want to train the model for 2 epochs, the task we are doing is TASK-CBD, we want to do the calculations with less precision (meaning they will be done faster), the maximum number of sentences in the GPU at one time is 8, the update rate is 4, the input resampling is 1 for class 0 (neutral), 1 for class 1 (cyber-bullying), 1 for class 2 (hate).
+
+Next, we tested the samplings as 1:15:10 and 0.75:5:3. In addition, we tested the performance of the RoBERTa-base model trained on a 20GB body, which is 10x smaller than the RoBERTa-large-v2.
 
 \pagebreak
 The results obtained can be found in \ref{tab:results}. 
@@ -206,6 +208,8 @@ large-v2-1-15-10 & 89.50                 & 54.21                 &  &  \\ \cline
 \caption{Results}
 \label{tab:results}
 \end{table}
+
+Accuracy was about 90\% in each case, however, it is not very reliable due to the huge advantage of the class of neutral statements.
 
 The results obtained by the script authors were 66.77\% and 74.16\% for the base model and the large model, respectively. Note that the task they performed is significantly simpler, because they only had to distinguish between negative and neutral statements. In our case there is a neutral statement and a negative statement in two variants, which is a more difficult task.
 
