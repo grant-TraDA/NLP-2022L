@@ -1,11 +1,13 @@
 import os
 import random
 from pathlib import Path
+import numpy as np
 
 from sentence_transformers import SentenceTransformer
 
 from preprocessing import load_data
 from summarization import summarize_multiple
+from search_model import search_model
 
 
 def run_and_save(n_iter=250, length=4, capacity=.1, model=SentenceTransformer('all-MiniLM-L6-v2'),
@@ -36,4 +38,11 @@ def run_and_save(n_iter=250, length=4, capacity=.1, model=SentenceTransformer('a
 
 
 if __name__ == '__main__':
-    run_and_save()
+    capacities = np.arange(0.1, 1, 0.2)
+    models = ['all-MiniLM-L6-v2', 'all-MiniLM-L12-v2', 'all-distilroberta-v1', 'all-mpnet-base-v2']
+    for capacity in capacities:
+        for model in models:
+            run_and_save(capacity=capacity,
+                         model=SentenceTransformer(model),
+                         summary_path=f"summaries/summary_{int(capacity*100)}_{model}",
+                         targets_path="targets")
