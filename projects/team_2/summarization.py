@@ -48,12 +48,16 @@ def summarize(sentences: list[str], model: SentenceTransformer, n_iter: int=5000
     Returns:
         str: summary
     """
+    # to calculate a similarity between sentences we use emeddings converting sentences to some vectors resembling sentences' contents
     sentence_embeddings: np.ndarray = model.encode(sentences)
     article_embedding: np.ndarray = model.encode('. '.join(sentences))
+    # exact similarity is a cosine similarity between sentences' embeddings
     sm: np.ndarray = 1 - squareform(
         pdist(np.concatenate((sentence_embeddings, article_embedding.reshape(1, -1)), axis=0), "cosine"))
     similarity_matrix: np.ndarray = sm[:-1, :-1]
     similarity__to_all: np.ndarray = sm[-1, :-1]
+    # here we run PSO on these embeddings
     pso: PSO = PSO(n_particles=50, similarities=(similarity_matrix, similarity__to_all), length=length, capacity=capacity)
+    # in return we get 0-1 array indicating chosen sentences, which we then join to one string summarization
     optimum: np.ndarray = pso.optimize(n_iter)
     return '. '.join([sentences[i] for i in np.where(optimum==1)[0]])
