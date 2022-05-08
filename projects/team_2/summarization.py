@@ -2,8 +2,7 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 from pso import PSO
 from scipy.spatial.distance import pdist, squareform
-from tqdm import tqdm
-import multiprocessing
+from p_tqdm import p_map
 
 
 class Summarizer(object):
@@ -19,9 +18,7 @@ class Summarizer(object):
 
 def summarize_multiple(articles, n_iter=5000, length=4, capacity=.1):
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    with multiprocessing.Pool() as pool:
-        ret = pool.map(Summarizer(model, n_iter=n_iter, length=length, capacity=capacity), tqdm(articles))
-    return ret
+    return p_map(Summarizer(model, n_iter=n_iter, length=length, capacity=capacity), articles)
 
 
 def summarize(sentences, model, n_iter=5000, length=4, capacity=.1):
