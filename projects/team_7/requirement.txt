@@ -1,0 +1,7 @@
+langdetect
+pandas
+numpy
+transformers
+torch
+tqdm
+pysle
