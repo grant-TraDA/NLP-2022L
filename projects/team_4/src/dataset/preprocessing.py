@@ -1,12 +1,10 @@
 import re
 import pandas as pd
-from spacy.lang.pl import Polish
 import string 
 
 RE_EMOJI = re.compile('[\U00010000-\U0010ffff]', flags=re.UNICODE)
 
-def preprocess_text(text):
-    nlp = Polish()
+def preprocess_text(text, nlp):
     # remove whitespaces
     text = ' '.join(text.split())
 

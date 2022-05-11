@@ -2,3 +2,8 @@ pandas
 numpy
 spacy
 seaborn
+transformers
+pytorch-lightning
+torch
+sklearn
+torchmetrics
