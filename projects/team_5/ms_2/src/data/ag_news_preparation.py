@@ -10,6 +10,6 @@ def AG_NEWS_preparation(split="train", max_len=16, aug_params=False):
         for d in list(AG_NEWS(split=split))
     ]
     aug = augmenter(**aug_params).augment if aug_params != False else False
-    dp = AutoencodingDataset(sentences[:100], aug, max_len=max_len)
+    dp = AutoencodingDataset(sentences, aug, max_len=max_len)
     dp.preproces()
     return dp
