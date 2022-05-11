@@ -1,7 +1,15 @@
 
+import sys
+import os
+sys.path.append(os.getcwd())
+
 import pickle
 import numpy as np
-from roberta import Roberta
+
+from models import roberta, tfidf
+sys.modules['tfidf'] = tfidf
+sys.modules['roberta'] = roberta
+
 
 class PredictionService:
 
@@ -11,9 +19,12 @@ class PredictionService:
         2: "hate-speech"
     }
 
-    # roberta_path="pretrained-models/roberta/large"
-    def __init__(self, clf_path="pretrained-models/combined-clf.pickle", tfidf_path="pretrained-models/tfidf.pickle", roberta_path="pretrained-models/roberta.pickle"):
-        #self.roberta = Roberta(roberta_path)
+    def __init__(
+        self,
+        clf_path="pretrained-models/combined-clf.pickle",
+        tfidf_path="pretrained-models/tfidf.pickle",
+        roberta_path="pretrained-models/roberta.pickle"
+    ):
         with open(roberta_path, "rb") as handle:
             self.roberta = pickle.load(handle)
         with open(tfidf_path, "rb") as handle:

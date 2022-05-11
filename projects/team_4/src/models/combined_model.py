@@ -1,4 +1,8 @@
 
+import sys
+import os
+sys.path.append(os.getcwd())
+
 import pickle
 import numpy as np
 from sklearn import svm
@@ -6,11 +10,11 @@ from sklearn import svm
 from roberta import Roberta
 from tfidf import Tfidf
 
-from stats import calculate_stats
-from data_loader import DataLoader
+from helpers.stats import calculate_stats
+from dataset.data_loader import DataLoader
 
 if __name__ == "__main__":
-    
+
     raw_train_x,train_y = DataLoader.load("training")
     raw_test_x,test_y = DataLoader.load("test")
 

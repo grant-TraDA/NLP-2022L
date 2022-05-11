@@ -25,7 +25,7 @@ class Roberta:
             archive_map=RobertaModel.hub_models(),
             cpu=True
         )
-        self.roberta = RobertaHubInterface(loaded['args'], loaded['task'], loaded['models'][0])
+        self.roberta = RobertaHubInterface(loaded["args"], loaded["task"], loaded["models"][0])
         self.roberta.eval()
 
     def preprocess_text(self, input):

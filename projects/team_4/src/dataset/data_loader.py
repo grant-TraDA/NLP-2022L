@@ -15,5 +15,5 @@ class DataLoader:
             pickle.dump(features, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def load_bert_features(type, directory="data", bert="large"):
-        with open(f"./{directory}/{type}_x_bert_{bert}.pickle", "rb") as handle:
+        with open(f"{directory}/{type}_x_bert_{bert}.pickle", "rb") as handle:
             return pickle.load(handle)
