@@ -1,4 +1,8 @@
-numpy
-pandas
-torch
 pronouncing
+langdetect
+pandas
+numpy
+transformers
+torch
+tqdm
+pysle
