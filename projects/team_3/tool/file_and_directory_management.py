@@ -4,6 +4,7 @@ import os.path
 import argparse
 from tabulate import tabulate
 import pickle
+import json
 
 
 def mkdir(path):
@@ -27,7 +28,7 @@ def read_file_to_list(path):
     strings = []
 
     for line in lines:
-        line = line.encode('ascii', 'ignore').decode("utf-8")
+        line = line.encode('utf-8').decode("utf-8")
         strings.append(line.rstrip())
 
     return strings
@@ -87,3 +88,14 @@ def load_from_pickle(path):
     file = open(path, "rb")
     data = pickle.load(file)
     return data
+
+
+def write_json(data, path):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(json.dumps(data, indent=4))
+
+
+def read_json(path):
+    with open(path, 'r', encoding='utf-8') as f:
+        content = json.load(f)
+    return content

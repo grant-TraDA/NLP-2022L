@@ -1,21 +1,26 @@
-import spacy
+from poldeepner2 import models
 
 from tool.model.ner_model import NERModel
 
 
-class SpacyModel(NERModel):
+class PolDeepNerModel(NERModel):
 
     def __init__(self, model_path, save_personal_titles, fix_personal_titles):
         super().__init__(save_personal_titles, fix_personal_titles)
-        self.model = spacy.load(model_path)
-        print('Spacy model "' + model_path + '" loaded.')
+        self.model = models.load(
+            model_path,
+            device="cpu",
+            resources_path="poldeepner_resources")
+        print('PolDeepNer model "' + model_path + '" loaded.')
 
     def get_doc_entities(self, text):
-        doc = self.model(text)
+        doc = self.model.process_text(text)
         entities = []
-        for index, ent in enumerate(doc.ents):
-            if ent.label_ == "persName" or ent.label_ == 'PER':
-                start, end = ent.start_char, ent.end_char
+        for index, ent in enumerate(doc):
+            # if ent.label in ["nam_liv_animal", "nam_liv_character", "nam_liv_god", "nam_liv_habitant"]:
+            #     print(ent)
+            if ent.label == "persName" or ent.label == 'nam_liv_person':
+                start, end = ent.begin, ent.end
                 ent_text = text[start:end]
                 if self.fix_personal_titles and ent_text.startswith(
                         self.personal_titles):
@@ -29,13 +34,4 @@ class SpacyModel(NERModel):
         return {'content': text, 'entities': entities}
 
     def recognize_personal_title(self, doc, index):
-        personal_title = None
-        span = doc.ents[index]
-        if span.start > 0:
-            word_before_name = doc[span.start - 1].text
-            if word_before_name.replace(".", "") in self.personal_titles:
-                personal_title = word_before_name.replace(".", "")
-            if word_before_name.lower() == "the":
-                personal_title = "the"
-
-        return personal_title
+        pass
