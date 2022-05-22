@@ -1,0 +1,17 @@
+label	macro	micro
+hate-speech-svm-rbf-ngram_range=1-selector_percentile=5	0.34972572857625295	0.871
+hate-speech-svm-rbf-ngram_range=1-selector_percentile=10	0.3689417844933957	0.861
+hate-speech-svm-rbf-ngram_range=2-selector_percentile=5	0.4033877464079625	0.871
+hate-speech-svm-rbf-ngram_range=2-selector_percentile=10	0.35620544576791185	0.866
+hate-speech-svm-poly-ngram_range=1-selector_percentile=5	0.36591939730292466	0.8729999999999999
+hate-speech-svm-poly-ngram_range=1-selector_percentile=10	0.3214413516345883	0.867
+hate-speech-svm-poly-ngram_range=2-selector_percentile=5	0.3385796343356025	0.869
+hate-speech-svm-poly-ngram_range=2-selector_percentile=10	0.321740195130753	0.868
+hate-speech-svm-linear-ngram_range=1-selector_percentile=5	0.3746306306306306	0.874
+hate-speech-svm-linear-ngram_range=1-selector_percentile=10	0.3571286543727488	0.868
+hate-speech-svm-linear-ngram_range=2-selector_percentile=5	0.3894124336092968	0.872
+hate-speech-svm-linear-ngram_range=2-selector_percentile=10	0.364829150782328	0.871
+hate-speech-naive-bayes-ngram_range=1-selector_percentile=5	0.321740195130753	0.868
+hate-speech-naive-bayes-ngram_range=1-selector_percentile=10	0.3493684266159294	0.87
+hate-speech-naive-bayes-ngram_range=2-selector_percentile=5	0.321740195130753	0.868
+hate-speech-naive-bayes-ngram_range=2-selector_percentile=10	0.3636046961859823	0.87
