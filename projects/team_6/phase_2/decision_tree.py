@@ -42,8 +42,7 @@ def experiment():
         results.append(result)
         print(result)
 
-
-    plt.figure(figsize=(12, 6), dpi=80)
+    plt.figure(figsize=(14, 6), dpi=80)
     plt.ylim(0, 1)
     plt.xticks([1] + [d for d in range(step, max_depth+1, step)])
 
@@ -93,6 +92,30 @@ def plot_combined_plot():
     plt.show()
 
 
+def plot_decision_tree():
+    data = load_full_data(stem=False)
+    vectorizer = CountVectorizer(ngram_range=(1, 1))
+    vectorizer.fit(data['train']['data'])
+    train_embeddings = vectorizer.transform(data['train']['data'])
+    clf = DecisionTreeClassifier(max_depth=3)
+    clf.fit(train_embeddings, data['train']['labels'])
+    rv = {v: k for k, v in vectorizer.vocabulary_.items()}
+    feature_names = [rv[i] for i in range(len(rv))]
+    class_names = ['neutral', 'cyberbullying', 'hate']
+
+    plt.figure(figsize=(14, 9), dpi=200)
+    plot_tree(clf, feature_names=feature_names, class_names=class_names, fontsize=9)
+    plt.show()
+
+    test_embeddings = vectorizer.transform(data['test']['data'])
+    result = clf.predict(test_embeddings)
+    f1_result_macro = f1_score(data['test']['labels'], result, average='macro')
+    f1_result_micro = f1_score(data['test']['labels'], result, average='micro')
+    print(f"macro: {f1_result_macro}")
+    print(f"micro: {f1_result_micro}")
+
+
 if __name__ == '__main__':
-    # experiment()
-    plot_combined_plot()
+    #experiment()
+    # plot_combined_plot()
+    plot_decision_tree()
