@@ -168,7 +168,160 @@ The computations will be done with google cloud graphics cards, on the google co
 \newpage
 \section{Solution}
 
-To solve the task, we used RoBERTa deep machine learning models along with scripts prepared to train them for the KLEJ benchmark prepared by Allegro. The available scripts are \href{https://github.com/sdadas/polish-roberta}{here}. 
+\subsection{Data preprocessing}
+
+During the development of the solution, a significant element was the proper preprocessing of the data. The proposed solution performs three-stage data processing:
+
+\begin{enumerate}
+    \item Optional stemming of words in sentences using \href{https://github.com/Tutanchamon/pl_stemmer/blob/master/pl_stemmer.py}{stemmer}.
+    \item Main sentence preprocessing module consisting of:
+    \begin{enumerate}
+        \item Lowering letters
+        \item Unidecoding
+        \item Removing @anonymized\_account phrase, dots and commas
+    \end{enumerate}
+    \item Removing stopwords
+\end{enumerate}
+
+The reprocessed datasets are stored in the solution repository in folder data in files: test\_preprocessed.tsv, train\_preprocessed.tsv, test\_preprocessed\_stem.tsv, train\_preprocessed\_stem.tsv.
+
+\subsection{Decision tree}
+
+At the beginning of the preparation of the machine learning solution to the problem posed, we started the tests by building a model closest to the rule-based system. The choice was to build a decision tree based on CountVectorizer with 1 element ngrams. We ran a series of tests in which we examined the effect of tree depth on the results obtained. Results can be seen in figure \ref{fig:decision_tree_height_comparison}. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{plots/decision_tree_height_comparison.png}
+\caption{Decision tree height comparison}
+\label{fig:decision_tree_height_comparison}
+\end{figure}
+
+Best obtained result for stemmed and not stemmed data are grouped in the table \ref{tab:decision_tree_hc_results}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+No. & Stemmed data & Best tree height & F1 macro & F1 micro \\ \hline
+1   & true         & 280              & 0.473    & 0.868    \\ \hline
+2   & false        & 500              & 0.483    & 0.87     \\ \hline
+\end{tabular}
+\caption{Decision tree height comparison, results}
+\label{tab:decision_tree_hc_results}
+\end{table}
+
+The performance of the decision trees increases during the initial phase of increasing the tree height, however, the fluctuations are quite high thereafter. This does not change the fact that good results have been achieved with the decision tree. However, it should be kept in mind that this solution is very dependent on the test set and does not take into account the meaning of the words, which can have very negative consequences when the vocabulary changes 
+
+
+As part of the development of the solution, we have also prepared an illustration showing how the decision making is done for an example tree of height 3. The result is available in figure \ref{fig:example_tree}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{plots/decision_tree_plot.png}
+\caption{Example decision tree with depth = 3 and F1 macro 0.309}
+\label{fig:example_tree}
+\end{figure}
+
+
+\subsection{SVM and Naive Bayes}
+
+During the development of the solution, we experimented also with SVM models with three different kernels: RBF, Poly, Linear. In addition, we also considered the Naive Bayes model. To analyze these solutions, we proposed a text vectorizer computed from 1 or 2 element ngrams. Then the 5 or 10\% most significant elements were selected. Moreover, each experiment was performed twice - for the set with and without the applied stemmer. The collected results can be found in the table \ref{tab:simple_results}.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llllllll}
+\hline
+\multicolumn{1}{|l|}{No.} & \multicolumn{1}{l|}{model}       & \multicolumn{1}{l|}{ngram} & \multicolumn{1}{l|}{selector\_percentile} & \multicolumn{1}{l|}{F1 macro (S)} & \multicolumn{1}{l|}{F1 micro (S)} & \multicolumn{1}{l|}{F1 macro} & \multicolumn{1}{l|}{F1 micro} \\ \hline
+\multicolumn{1}{|l|}{1}   & \multicolumn{1}{l|}{SVM RBF}     & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.365}        & \multicolumn{1}{l|}{0.873}        & \multicolumn{1}{l|}{0.350}    & \multicolumn{1}{l|}{0.871}    \\ \hline
+\multicolumn{1}{|l|}{2}   & \multicolumn{1}{l|}{SVM RBF}     & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.367}        & \multicolumn{1}{l|}{0.864}        & \multicolumn{1}{l|}{0.369}    & \multicolumn{1}{l|}{0.861}    \\ \hline
+\multicolumn{1}{|l|}{3}   & \multicolumn{1}{l|}{SVM RBF}     & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.399}        & \multicolumn{1}{l|}{0.869}        & \multicolumn{1}{l|}{0.403}    & \multicolumn{1}{l|}{0.871}    \\ \hline
+\multicolumn{1}{|l|}{4}   & \multicolumn{1}{l|}{SVM RBF}     & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.351}        & \multicolumn{1}{l|}{0.864}        & \multicolumn{1}{l|}{0.356}    & \multicolumn{1}{l|}{0.866}    \\ \hline
+\multicolumn{1}{|l|}{5}   & \multicolumn{1}{l|}{SVM Poly}    & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.398}        & \multicolumn{1}{l|}{0.875}        & \multicolumn{1}{l|}{0.366}    & \multicolumn{1}{l|}{0.873}    \\ \hline
+\multicolumn{1}{|l|}{6}   & \multicolumn{1}{l|}{SVM Poly}    & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.322}        & \multicolumn{1}{l|}{0.867}        & \multicolumn{1}{l|}{0.321}    & \multicolumn{1}{l|}{0.867}    \\ \hline
+\multicolumn{1}{|l|}{7}   & \multicolumn{1}{l|}{SVM Poly}    & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.339}        & \multicolumn{1}{l|}{0.87}         & \multicolumn{1}{l|}{0.339}    & \multicolumn{1}{l|}{0.869}    \\ \hline
+\multicolumn{1}{|l|}{8}   & \multicolumn{1}{l|}{SVM Poly}    & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.322}        & \multicolumn{1}{l|}{0.868}        & \multicolumn{1}{l|}{0.322}    & \multicolumn{1}{l|}{0.868}    \\ \hline
+\multicolumn{1}{|l|}{\textbf{9}}   & \multicolumn{1}{l|}{\textbf{SVM Linear}}  & \multicolumn{1}{l|}{\textbf{1}}     & \multicolumn{1}{l|}{\textbf{5}}                    & \multicolumn{1}{l|}{\textbf{0.409}}        & \multicolumn{1}{l|}{\textbf{0.877}}        & \multicolumn{1}{l|}{\textbf{0.375}}    & \multicolumn{1}{l|}{\textbf{0.874}}    \\ \hline
+\multicolumn{1}{|l|}{10}  & \multicolumn{1}{l|}{SVM Linear}  & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.379}        & \multicolumn{1}{l|}{0.871}        & \multicolumn{1}{l|}{0.357}    & \multicolumn{1}{l|}{0.868}    \\ \hline
+\multicolumn{1}{|l|}{11}  & \multicolumn{1}{l|}{SVM Linear}  & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.389}        & \multicolumn{1}{l|}{0.872}        & \multicolumn{1}{l|}{0.389}    & \multicolumn{1}{l|}{0.872}    \\ \hline
+\multicolumn{1}{|l|}{12}  & \multicolumn{1}{l|}{SVM Linear}  & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.353}        & \multicolumn{1}{l|}{0.869}        & \multicolumn{1}{l|}{0.365}    & \multicolumn{1}{l|}{0.871}    \\ \hline
+\multicolumn{1}{|l|}{13}  & \multicolumn{1}{l|}{Naive Bayes} & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.322}        & \multicolumn{1}{l|}{0.868}        & \multicolumn{1}{l|}{0.322}    & \multicolumn{1}{l|}{0.868}    \\ \hline
+\multicolumn{1}{|l|}{14}  & \multicolumn{1}{l|}{Naive Bayes} & \multicolumn{1}{l|}{1}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.344}        & \multicolumn{1}{l|}{0.87}         & \multicolumn{1}{l|}{0.349}    & \multicolumn{1}{l|}{0.87}     \\ \hline
+\multicolumn{1}{|l|}{15}  & \multicolumn{1}{l|}{Naive Bayes} & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{5}                    & \multicolumn{1}{l|}{0.322}        & \multicolumn{1}{l|}{0.868}        & \multicolumn{1}{l|}{0.322}    & \multicolumn{1}{l|}{0.868}    \\ \hline
+\multicolumn{1}{|l|}{16}  & \multicolumn{1}{l|}{Naive Bayes} & \multicolumn{1}{l|}{2}     & \multicolumn{1}{l|}{10}                   & \multicolumn{1}{l|}{0.364}        & \multicolumn{1}{l|}{0.87}         & \multicolumn{1}{l|}{0.364}    & \multicolumn{1}{l|}{0.87}     \\ \hline
+                          &                                  &                            &                                           &                                   &                                   &                               &                              
+\end{tabular}
+\caption{Different SVM and Naive Bayes settings, results, S - stemmed data}
+\label{tab:simple_results}
+\end{table}
+
+It turns out that Linear SVM using 1 element grams and a 5\% selector on the data with the stemmer applied, turned out to be the best solution from this set. In addition, it can be inferred from the table that only in five cases we obtained an improvement in performance after using stemmer. These are the rows 1, 5, 6, 9, 10.
+
+
+\subsection{Multilayer perceptron}
+
+The next stage in the development of our solution was to prepare an MLP network with a structure consisting of the following parts:
+
+\begin{itemize}
+    \item Linear layer of size input\_size x 200
+    \item Dropout layer 0.2
+    \item ReLU
+    \item Linear layer of size 200 x 50
+    \item Dropout layer 0.2
+    \item ReLU
+    \item Linear layer of size 50 x 3
+    \item Softmax
+\end{itemize}
+
+
+During the development of the solution, we prepared an environment to train MLPs along with various vectorizers. We tested the following text vectors as part of our testing:
+
+
+\begin{itemize}
+    \item CountVectorizer with ngrams of size 1, with selector 5\%
+    \item CountVectorizer with ngrams of size 2, with selector 5\%
+    \item TfidfVectorizer
+    \item Spacy pl\_core\_news\_md vectorizer
+    \item Spacy pl\_core\_news\_lg vectorizer
+\end{itemize}
+
+Each of these tests was performed on stemmed data and without applied stemmer. Each test was run with the Adam optimizer, with an initial learning rate of 1e-4, at 20 epochs, with the CrossEntropy loss function. Training data were reported with batches of size 10. We also implemented a custom subsampler that rejects 80\% of sentences with a label 0 (neutral sentence) - this operation was needed, otherwise the network learned to predict only one class. Also, in the beginning of every experiment random seed was set to same value (1).
+
+The collected test results are shown in the table below.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+No. & Vectorizer                             & F1 macro (S) & F1 micro (S) & F1 macro & F1 micro \\ \hline
+1   & CountVectorizer, ngram=1, percentile=5 & 0.472        & 0.874        & 0.485    & 0.876    \\ \hline
+2   & CountVectorizer, ngram=2, percentile=5 & 0.441        & 0.874        & 0.427    & 0.877    \\ \hline
+3   & \textbf{Tfidf}                                  & \textbf{0.481}        & \textbf{0.815}        & \textbf{0.500}    & \textbf{0.828}    \\ \hline
+4   & Spacy, pl\_core\_news\_md              & 0.438        & 0.816        & 0.430    & 0.787    \\ \hline
+5   & Spacy, pl\_core\_news\_lg              & 0.435        & 0.800        & 0.436    & 0.803    \\ \hline
+\end{tabular}
+\caption{MLP with different vectorizers, results. S - stemmed data, results for best F1 macro score epoch}
+\label{tab:mlp_results}
+\end{table}
+
+The best solution turned out to be the one using the tfidf vectorizer on the data without the stemmer applied.
+
+The figure \ref{fig:mlp_training} shows the training processes for each experiment.  
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{plots/mlp_with_different_embeddings_comparison.png}
+\caption{MLP training processes}
+\label{fig:mlp_training}
+\end{figure}
+
+One can see on the graph that the training process varies between methods up to about 5 epochs. After that, the process is similar, but the differences in F1 macro statistics are about a few percentage points.
+
+
+
+\subsection{Deep learning}
+
+To solve the task using deep learning methods, we used RoBERTa deep machine learning models along with scripts prepared to train them for the KLEJ benchmark prepared by Allegro. The available scripts are \href{https://github.com/sdadas/polish-roberta}{here}. 
 
 During the development of the solution, we used the Collab Pro environment (Google's computing cloud) and the Tesla graphics card that was assigned to us there.
 
@@ -192,10 +345,9 @@ The parameters mean that we used the roberta\_large architecture, the model is i
 
 Next, we tested the samplings as 1:15:10 and 0.75:5:3. In addition, we tested the performance of the RoBERTa-base model trained on a 20GB body, which is 10x smaller than the RoBERTa-large-v2.
 
-\pagebreak
-The results obtained can be found in \ref{tab:results}. 
+The results obtained can be found in \ref{tab:roberta_results}. 
 
-\begin{table}[]
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|ll}
 \cline{1-3}
@@ -205,8 +357,8 @@ large-v2-075-5-3 & 90.00                 & 58.63                 &  &  \\ \cline
 large-v2-1-1-1   & 90.70                 & 51.48                 &  &  \\ \cline{1-3}
 large-v2-1-15-10 & 89.50                 & 54.21                 &  &  \\ \cline{1-3}
 \end{tabular}
-\caption{Results}
-\label{tab:results}
+\caption{RoBERTa with different subsampling methods, results}
+\label{tab:roberta_results}
 \end{table}
 
 Accuracy was about 90\% in each case, however, it is not very reliable due to the huge advantage of the class of neutral statements.
