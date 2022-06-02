@@ -1,0 +1,19 @@
+
+@font-face {
+    font-family: montserrat;
+    src: url(assets/montserrat.ttf);
+}
+
+body {
+    font-family: montserrat;
+    margin: 25px 0;
+    overflow: hidden;
+    background-color: SlateGray;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
