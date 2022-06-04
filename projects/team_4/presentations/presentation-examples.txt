@@ -14,3 +14,5 @@ non-harmful: jesteście śmieszni
 
 cyberbullying: jesteście głupi
 non-harmful:   jesteście nie głupi
+non-harmful:   jesteś miła
+cyberbullying: jesteś niemiła
