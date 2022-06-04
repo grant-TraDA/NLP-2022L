@@ -1,0 +1,16 @@
+hate-speech: kupa z ciebie
+non-harmful: kupa z Ciebie
+hate-speech: kupa z ciebie
+non-harmful: kupa zmartwień z ciebie
+
+cyberbullying: zamknij japę
+cyberbullying: zamknij japę kolego
+cyberbullying: jesteś beznadziejny
+non-harmful:   ania jest beznadziejna
+
+hate-speech: jesteście śmiećmi
+hate-speech: jesteście nieśmieszni
+non-harmful: jesteście śmieszni
+
+cyberbullying: jesteście głupi
+non-harmful:   jesteście nie głupi
