@@ -1,0 +1,6 @@
+/data/
+/linux-env/
+/models/
+/final/
+__pycache__/
+.ipynb_checkpoints
