@@ -9,7 +9,7 @@ for model in pl_core_news_sm pl_core_news_md pl_core_news_lg xx_ent_wiki_sm; do
   python -m tool.scripts.compute_metrics data/novels_titles/polish_titles.txt data/testing_sets/"$1"/ experiments/"$2"/spacy__${model}/ experiments/"$2"/spacy__${model}/"$3" --protagonist_tagger
 done
 
-for model in ner-multi ner-fast; do
+for model in ner-multi ner-multi-fast; do
   python -m tool.scripts.compute_metrics data/novels_titles/polish_titles.txt data/testing_sets/"$1"/ experiments/"$2"/flair__${model}/ experiments/"$2"/flair__${model}/"$3" --protagonist_tagger
 done
 
