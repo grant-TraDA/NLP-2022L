@@ -23,7 +23,7 @@ class AccentTokenizer:
                 model = pickle.load(f)
             return model
 
-        a_tokenizer = cls(t_tokenizer, filename)
+        a_tokenizer = cls(t_tokenizer)
 
         with open(filename, 'wb') as f:
             model = pickle.dump(a_tokenizer, f, pickle.HIGHEST_PROTOCOL)
@@ -83,15 +83,22 @@ class AccentTokenizer:
                     accent = word_to_accent_id.get(
                         word, self.no_accent_id)
                     matrix[gtp2_id, accent] = 1
+            if np.sum(matrix[gtp2_id, :]) == 0:
+                matrix[gtp2_id, :] += 1
+
+        matrix /= np.sum(matrix, axis=0)
 
         self.word_to_accent_id = word_to_accent_id
+        self.accent_patterns = {v: k for k, v in accent_pattern_to_id.items()}
+        self.accent_patterns[0] = 'no_accent'
+        self.accent_patterns[1] = 'no_accent'
+        self.accent_patterns[2] = 'no_accent'
         self.matrix = matrix
 
-    def tokenize(self, sentence: str, t_tokenizer):
+    def tokenize(self, tokenized, t_tokenizer):
         '''
         Generates padded list of accent types in sentence
         '''
-        tokenized = t_tokenizer.encode(sentence)
         id_list = []
         part_of_last_word = False
         for i, token_id1 in enumerate(tokenized[:-1]):
@@ -106,10 +113,10 @@ class AccentTokenizer:
                 word = utils.join_gtp2_tokens_to_word([token1, token2])
                 part_of_last_word = True
             else:
-                word = token1
+                word = utils.join_gtp2_tokens_to_word([token1])
             accent_id = self.word_to_accent_id.get(word, self.no_accent_id)
             id_list.append(accent_id)
-        if sentence:
+        if len(tokenized) > 0:
             if part_of_last_word:
                 id_list.append(id_list[-1])
             else:
@@ -117,10 +124,18 @@ class AccentTokenizer:
                     t_tokenizer.decode(tokenized[-1]), self.no_accent_id)
                 id_list.append(accent_id)
 
-        id_list += [config.PAD_token for _ in range(
+        id_list = id_list + [config.PAD_token for _ in range(
             config.MAX_LENGTH - len(id_list))]
         return torch.tensor(id_list, dtype=torch.long, device=config.DEVICE)
 
+    def detokenize(self, tokenized):
+        for word, id in self.word_to_accent_id.items():
+            if tokenized == id and word != '':
+                return word
+        return '<no_accent>'
+
+    def get_accent_pattern(self, id):
+        return self.accent_patterns[id]
 
 class AccentToGtp2Tokenizer(nn.Module):
     def __init__(self, matrix):

@@ -24,31 +24,23 @@ def prepare_tgt(tgt):
     return tgt_input, tgt_output
 
 
-def pad_1d_tensor(arr, limit, value):
-    '''
-    Creates vector of length limit by right value-padding
-    '''
-    return arr+[value for _ in range(limit-len(arr))]
-
-
 def create_input_data(line0, line1, t_tokenizer, a_tokenizer):
     '''
     Performs tokenizing and padding of input data 
     '''
+    num_tokens_first_line = len(t_tokenizer.encode(line0))
+    two_lines = line0 + " " + line1
+    t_tokenized = t_tokenizer.encode(two_lines)
+    t_tokenized_line0 = t_tokenized[:num_tokens_first_line]
+    t_tokenized_line1 = t_tokenized[num_tokens_first_line:]
+    gtp2_in = two_lines
+    model_in_line0 = a_tokenizer.tokenize(t_tokenized_line0, t_tokenizer)
+    model_in_line1 = a_tokenizer.tokenize(t_tokenized_line1, t_tokenizer)
     return (
-        a_tokenizer.tokenize(line0, t_tokenizer),
-        a_tokenizer.tokenize(line1, t_tokenizer),
-        torch.tensor(
-            pad_1d_tensor(
-                t_tokenizer.encode(line0), config.MAX_LENGTH, t_tokenizer.encode(
-                    '<|endoftext|>')[0]
-            ) + pad_1d_tensor(
-                t_tokenizer.encode(line1), config.MAX_LENGTH, t_tokenizer.encode(
-                    '<|endoftext|>')[0]
-            ),
-            dtype=torch.long,
-            device=config.DEVICE
-        )
+        model_in_line0.unsqueeze(-1).type(torch.long),
+        model_in_line1.unsqueeze(-1).type(torch.long),
+        gtp2_in,
+        str(num_tokens_first_line)
     )
 
 

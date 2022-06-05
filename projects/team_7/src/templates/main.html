@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poem Generation</title>
+    <style>
+        .message {
+            padding: 10px;
+            margin: 5px;
+            background-color: #f3f3f3
+        }
+        nav a {
+            color: #d64161;
+            font-size: 3em;
+            margin-left: 50px;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Poem Generation</a>
+    </nav>
+    <hr>
+    <div class="content">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {% for subfield in form.model_type %}
+                <span>{{ subfield }}</span>
+                <span>{{ subfield.label }}</span>
+            {% endfor %}
+            <p>
+                {{ form.input.label }}<br>
+                {{ form.input(size=32) }}
+            </p>
+            <p>
+                {{ form.temperature.label }}<br>
+                {{ form.temperature(size=32) }}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        <p>{{ next_line }}</p>
+    </div>
+</body>
+</html>
