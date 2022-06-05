@@ -3,7 +3,7 @@ from p_tqdm import p_map
 from scipy.spatial.distance import pdist, squareform
 from sentence_transformers import SentenceTransformer
 
-from pso import PSO
+from src.pso import PSO
 
 
 class Summarizer(object):

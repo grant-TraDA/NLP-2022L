@@ -5,11 +5,10 @@ import numpy as np
 
 from sentence_transformers import SentenceTransformer
 
-from preprocessing import load_data
-from summarization import summarize_multiple
+from src.preprocessing import load_data
+from src.summarization import summarize_multiple
 import pandas as pd
 from typing import List
-from search_model import search_model
 
 
 def run_and_save(n_iter: int=250, length: int=4, capacity: float=.1, model: SentenceTransformer=SentenceTransformer('all-MiniLM-L6-v2'),
@@ -28,7 +27,7 @@ def run_and_save(n_iter: int=250, length: int=4, capacity: float=.1, model: Sent
     Returns:
         List[str]: list of summaries for following articles
     """
-    _, _, test = load_data("data")
+    _, _, test = load_data("src/data")
 
     # choosing a subset from training data (not necessarily)
     if subset_size is None:
@@ -70,5 +69,8 @@ if __name__ == '__main__':
         for capacity in capacities:
             run_and_save(capacity=capacity,
                          model=model,
+                         subset_size=1,
                          summary_path=f"summaries/summary_{int(capacity*100)}_{model_name}",
-                         targets_path="targets")
+                         targets_path="src/targets")
+            break
+        break
