@@ -1,0 +1,5 @@
+In order to run the notebooks, data must be downloaded from the PolEval2021 GitHub repository (https://github.com/poleval/2021-punctuation-restoration).
+
+* eda_preprocessed.ipynb - to run this notebook one needs to download the *train* catalog from the mentioned repository, create *preprocessed* catalog next to this notebook and place *train* catalog with files inside it
+* eda_forced_alignment.ipynb - to run this notebook one needs to download the zipped catalogs from the *fa* catalog from the mentioned repository and extract the files next to this notebook; there should be 3 catalogs: train, train_with_punctuation, validation
+* eda_audio.ipynb - to run this notebook one needs to download the files from Google Drive (https://drive.google.com/file/d/1b6MyyqgA9D1U7DX3Vtgda7f9ppkxjCXJ/view, https://drive.google.com/file/d/1gwQRvrUtFqz3xGnmEN8znAzkBwC12Czu/view) and extract them according to the path specified in the notebook; WARNING running the notebook takes approximately 5 hours

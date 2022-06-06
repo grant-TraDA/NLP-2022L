@@ -46,7 +46,8 @@ def personal_titles_stats(annotations):
 
 
 def read_annotations(annotation_path):
-    with open(annotation_path) as f:
+    with open(annotation_path, encoding='utf-8') as f:
         annotations = f.read()
-    annotations = json.loads(annotations)
+    annotations = json.loads(annotations.encode('utf-8').decode('utf-8'))
+
     return annotations

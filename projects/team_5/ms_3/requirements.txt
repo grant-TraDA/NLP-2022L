@@ -1,0 +1,12 @@
+gensim==4.1.2
+torch==1.11.0
+torchtext==0.12.0
+torchdata==0.3.0
+nltk==3.2.5
+matplotlib==3.2.2
+numpy==1.21.6
+nlpaug==1.1.10
+scikit-learn==1.0.2
+flair==0.11.1
+tqdm
+pysocks==1.5.6

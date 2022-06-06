@@ -11,3 +11,8 @@ pip install -r requirements.txt
 ```
 ## EDA
 Explorative Data Analysis is available in Jupyter Notebook `eda.ipynb`
+
+## Colab notebooks
+In directory `colab notebooks` there are two notebooks meant to run in Google Colaboratory environment.
+
+`matchsum.ipynb` notebooks enables to test MatchSum summarization and `calculate_rouge.ipynb` enables to calculate ROUGE scores for selected summaries.

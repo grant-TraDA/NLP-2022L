@@ -1,7 +1,8 @@
 from fuzzywuzzy import fuzz
 import itertools
 
-from tool.gender_checker import get_name_gender, get_personal_titles, create_titles_and_gender_dictionary
+from tool.gender_checker import get_name_gender, get_personal_titles, \
+    create_titles_and_gender_dictionary
 from tool.diminutives_recognizer import get_names_from_diminutive
 from tool.model.utils import load_model
 
@@ -20,11 +21,12 @@ class NamesMatcher:
         matcher_results = []
         for result in ner_results:
             entities = []
-            for (ent_start, ent_stop, ent_label,
-                 personal_title) in result['entities']:
+            for (ent_start, ent_stop, ent_label, personal_title) in result[
+                    'entities']:
                 person = result['content'][ent_start:ent_stop]
-                final_match = self.find_match_for_person(
-                    person, personal_title, characters)
+                final_match = self.find_match_for_person(person,
+                                                         personal_title,
+                                                         characters)
                 if final_match is not None:
                     entities.append([ent_start, ent_stop, final_match])
 
