@@ -43,7 +43,17 @@ class Encoder(torch.nn.Module):
         the input linear layer allows for any dimensionality inputs. Likewise,
         the output linear layers, serve the same function, they also create 
         expectation representation and logarithm of variance representation.
+        
+        Parameters:
+            word_embedding_size (int): the input word embedding size;
+            document_embedding_size (int): the output document embedding size;
 
+            d_model (int): the number of expected features in the input (required). 
+            nhead (int): the number of heads in the multiheadattention models (required).
+            num_layers: the number of layers (required);
+            dropout=0.1: dropout level;
+
+            max_log2len=8: logarithm of the maximum length of the word sequence (document);
 
 
         """
