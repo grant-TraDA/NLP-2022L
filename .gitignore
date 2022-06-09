@@ -1,4 +1,7 @@
-projects/team_2/__pycache__/
-projects/team_2/data/test.csv
-projects/team_2/data/train.csv
-projects/team_2/data/validation.csv
+projects/team_2/app/src/__pycache__/
+projects/team_2/app/__pycache__/
+projects/team_2/app/api/__pycache__/
+projects/team_2/app/src/data/
+projects/team_2/app/src/summaries/
+projects/team_2/app/src/targets/
+

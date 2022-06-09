@@ -1,18 +1,13 @@
 # Text Summarization – Exploring Potential of PSO Usage in Hybrid Algorithms
 
-## Data
-Data should be downloaded from Kaggle: [CNN-DailyMail News Text Summarization](https://www.kaggle.com/datasets/gowrishankarp/newspaper-text-summarization-cnn-dailymail).
-Next, data should be extracted in directory `data`.
-
 ## Requirements
-Requirements are stated in file `requirements.txt` and can be installed using `pip`
-```shell
-pip install -r requirements.txt
-```
-## EDA
-Explorative Data Analysis is available in Jupyter Notebook `eda.ipynb`
+To build docker image one must install [Docker](https://docs.docker.com/get-docker/) with [Docker Compose](https://docs.docker.com/compose/install/).
 
-## Colab notebooks
-In directory `colab notebooks` there are two notebooks meant to run in Google Colaboratory environment.
+## Deployment
+To deploy application for text summarization using PSO with Docker, perform following steps:
 
-`matchsum.ipynb` notebooks enables to test MatchSum summarization and `calculate_rouge.ipynb` enables to calculate ROUGE scores for selected summaries.
+1. Clone this repository.
+2. Go to folder `NLP-2022/projects/team_2/`.
+3. Run command `docker-compose up`.
+4. After image is build, open in your browser website `http://127.0.0.1:8000/`.
+5. Paste text in upper text area, click *Summarize* and text summary will appear in bottom text area.
