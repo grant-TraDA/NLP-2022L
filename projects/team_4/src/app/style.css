@@ -1,0 +1,59 @@
+
+@font-face {
+    font-family: Roboto-Thin;
+    src: url(assets/Roboto-Thin.ttf);
+}
+
+body {
+    font-family: Roboto-Thin;
+    margin: 25px 0;
+    min-height: 100vh;
+    overflow: hidden;
+    background-image: linear-gradient(to bottom right, #12487a, #0a2652);
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.prediction-container {
+    margin-top: 50vh;
+}
+
+.history-container {
+    margin-top: 2em;
+}
+
+textarea {
+    padding: 0.66em;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: MediumSeaGreen;
+    border: 2px solid DarkGray;
+    border-radius: 15px;
+    outline: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+::placeholder {
+    color: DarkGray;
+}
+
+a {
+    font-weight: normal;
+}
+
+h1 {
+    color: MediumSeaGreen;
+    margin: 1em 0;
+}
+
+.hline {
+    width: 100%;
+    border: 1px solid DarkGray;
+}

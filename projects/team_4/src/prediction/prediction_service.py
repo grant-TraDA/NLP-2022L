@@ -10,7 +10,6 @@ from models import roberta, tfidf
 sys.modules['tfidf'] = tfidf
 sys.modules['roberta'] = roberta
 
-
 class PredictionService:
 
     class_dict = {

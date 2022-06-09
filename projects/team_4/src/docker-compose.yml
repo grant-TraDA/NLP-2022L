@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web-app:
+    build:
+      context: ./
+      dockerfile: ./docker/web-app/Dockerfile
+    ports:
+      - 8080:8080
+  rest-api:
+    build:
+      context: ./
+      dockerfile: ./docker/rest-api/Dockerfile
+    ports:
+      - 5000:5000
