@@ -21,6 +21,22 @@ class Autoencoder(torch.nn.Module):
 
                # If use separate variance
                variational=False):
+        
+        """Autoencoder
+        
+        The autoencoder module.
+        
+        Parameters:
+            word_embedding_size (int): the input word embedding size;
+            document_embedding_size (int): the output document embedding size;
+            d_model (int): the number of expected features in the input (required);
+            nhead (int): the number of heads in the multiheadattention models (required);
+            num_layers: the number of layers (required);
+            dropout=0.1: dropout level;
+            max_log2len=8: logarithm of the maximum length of the word sequence (document);
+            variational=False: if the encoder is variational.
+            
+        """
 
         super(Autoencoder, self).__init__()
         self.variational = variational
@@ -28,6 +44,12 @@ class Autoencoder(torch.nn.Module):
         self.decoder = Decoder(word_embedding_size, document_embedding_size, d_model, nhead, num_layers, dropout, max_log2len)
     
     def forward(self, X, return_Z=False):
+        """forward
+        
+        Parameters:
+            X: word embeddings;
+            return_Z=False: if return the latent variable.
+        """
         n = X.shape[1]
         X = self.encoder(X, keepdim=True, return_variance=self.variational)
         Z = X

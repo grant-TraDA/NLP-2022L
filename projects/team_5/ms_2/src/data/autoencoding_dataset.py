@@ -17,6 +17,18 @@ class AutoencodingDataset(torch.utils.data.Dataset):
                max_len=256,
                embedding=WordEmbeddings('glove'),
                classes=None):
+    """AutoencodingDataset
+    
+    Dataset for training autoencoder.
+    
+    Parameters:
+        sentences: list of sentences (str).
+        augment=False: augmentation function. If False, no augmentation is applied.
+        max_len=256: maximum sentence length.
+        embedding=WordEmbeddings('glove'): word embeddings.
+        classes=None: optional label for observations.
+    
+    """
     
     self.max_len = max_len
     self.embedding = embedding
@@ -44,19 +56,35 @@ class AutoencodingDataset(torch.utils.data.Dataset):
     return self.sentences
 
   def prepare_sentences(self):
+    """prepare_sentences
+    
+    Preparing sentences with the prep method.
+    """
     for i in trange(len(self.sentences)):
       self.sentences[i] = self.prep(self.sentences[i])
   
   def make_sentences(self):
+    """make_sentences
+    
+    Converting sentences to flair Sentence.
+    """
     for i in trange(len(self.sentences)):
       self.sentences[i] = Sentence(self.sentences[i])
 
   def embed_sentences(self):
+    """embed_sentences
+    
+    Embedding sentences.
+    """
     for s in tqdm(self.sentences):
       self.embedding.embed(s)
     self.embedding_size = self.sentences[0][0].embedding.shape[0]
 
   def split_sentences(self):
+    """split_sentences
+    
+    Splittin sentences into smaller sub-sentences to match the max_len field.
+    """
     if self.classes:
       temp = []
       temp_classes = []
@@ -82,6 +110,10 @@ class AutoencodingDataset(torch.utils.data.Dataset):
       self.sentences = temp
 
   def preproces(self):
+    """preproces
+    
+    Combined preprocessing pipeline.
+    """
     print("Preparing sentences...")
     self.prepare_sentences()
     print("Making sentences...")
@@ -93,7 +125,17 @@ class AutoencodingDataset(torch.utils.data.Dataset):
     print("Done!")
 
   def __getitem__(self, idx):
+    """__getitem__
     
+    The __getitem__ implementation. The selected sentence is transformed to stack of embeddings.
+    The embeddings are padded to match the max_len field.
+    
+    Parameters:
+        idx: index.
+        
+    Returns:
+        Stacked embeddings of words from a sequence.
+    """
     ret_2 = torch.cat([
         torch.stack([t.embedding for t in self.sentences[idx]]),
         torch.zeros(self.max_len - len(self.sentences[idx]), self.embedding_size, device=flair.device)
@@ -119,6 +161,19 @@ class AutoencodingDataset(torch.utils.data.Dataset):
 
   @staticmethod
   def prep(sentence, tokenizer = RegexpTokenizer(r'\S+'), stop_words=set(stopwords.words('english'))):
+    """prep
+    
+    Preparation of sequences. Applying tokenization and removal of stopwords.
+    
+    Parameters:
+        sentence (str): sentence to preprocess. 
+        tokenizer: tokenizer to discover words.
+        stop_words: a set of stop_words.
+        
+    Returns:
+        Prepared sentence (str).
+    
+    """
     return " ".join([
         word
         for word, tag in nltk.pos_tag(tokenizer.tokenize(sentence))

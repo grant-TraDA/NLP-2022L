@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: allelesstaunchynlppw 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: allelesstaunchynlppw
+  template:
+    metadata:
+      labels:
+        app: allelesstaunchynlppw 
+    spec:
+      containers:
+        - name: allelesstaunchynlppw 
+          image: nlpregistrytwo.azurecr.io/allelesstaunchynlppw
+          ports:
+          - containerPort: 8080
