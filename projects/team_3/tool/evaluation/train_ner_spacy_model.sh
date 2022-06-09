@@ -12,5 +12,5 @@ cd ./../../
 # model_name - name of spacy model to finetune
 
 for model in pl_core_news_sm pl_core_news_md pl_core_news_lg xx_ent_wiki_sm; do
-  python -m tool.scripts.fine_tune_ner_model experiments/tuned_ner_3/${model} data/novels_titles/polish_training_2.txt data/ner_training_sets/polish_training_set_2 data/ner_training_sets/polish_training_set_2 ${model}
+  python -m tool.scripts.fine_tune_ner_model experiments/tuned_ner/${model} data/novels_titles/polish_training_2.txt data/ner_training_sets/polish_training_set_2 data/ner_training_sets/polish_training_set_2 ${model}
 done
